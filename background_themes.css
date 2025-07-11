@@ -1,0 +1,105 @@
+/* 店铺信息提取器 - 背景主题方案 */
+
+/* 方案1: 清新蓝灰色（当前使用） */
+.theme-light-blue {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* 方案2: 温暖米色 */
+.theme-warm-beige {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+/* 方案3: 清淡绿色 */
+.theme-soft-green {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+
+/* 方案4: 优雅灰色 */
+.theme-elegant-gray {
+    background: linear-gradient(135deg, #d2d2d2 0%, #f8f8f8 100%);
+}
+
+/* 方案5: 淡雅紫色 */
+.theme-soft-purple {
+    background: linear-gradient(135deg, #e0c3fc 0%, #9bb5ff 100%);
+}
+
+/* 方案6: 清新薄荷 */
+.theme-fresh-mint {
+    background: linear-gradient(135deg, #96fbc4 0%, #f9f586 100%);
+}
+
+/* 方案7: 天空蓝 */
+.theme-sky-blue {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+
+/* 方案8: 日落橙 */
+.theme-sunset-orange {
+    background: linear-gradient(135deg, #fab1a0 0%, #e17055 100%);
+}
+
+/* 方案9: 深色主题 */
+.theme-dark {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+/* 方案10: 纯色简约 */
+.theme-minimal {
+    background: #f8f9fa;
+}
+
+/* 方案11: 商务蓝 */
+.theme-business-blue {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* 方案12: 森林绿 */
+.theme-forest-green {
+    background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+}
+
+/* 方案13: 玫瑰金 */
+.theme-rose-gold {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* 方案14: 海洋蓝 */
+.theme-ocean-blue {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* 方案15: 暖阳黄 */
+.theme-warm-yellow {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+}
+
+/* 深色主题时的卡片调整 */
+.theme-dark .header,
+.theme-dark section {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ecf0f1;
+    backdrop-filter: blur(10px);
+}
+
+.theme-dark .header-content h1,
+.theme-dark .section-header h2 {
+    color: #ecf0f1;
+}
+
+.theme-dark .input-with-button input {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ecf0f1;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.theme-dark .results-table th {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ecf0f1;
+}
+
+.theme-dark .status-item {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ecf0f1;
+}

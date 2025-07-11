@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>店铺信息提取器</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../background_themes.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-store"></i> 店铺信息提取器</h1>
+                <p>呈尚策划客服部使用，智能提取店铺信息并导出到Excel</p>
+                <div class="theme-selector">
+                    <label for="themeSelect"><i class="fas fa-palette"></i> 主题:</label>
+                    <select id="themeSelect" onchange="changeTheme(this.value)">
+                        <option value="">默认浅灰</option>
+                        <option value="theme-light-blue">清新蓝灰</option>
+                        <option value="theme-warm-beige">温暖米色</option>
+                        <option value="theme-soft-green">清淡绿色</option>
+                        <option value="theme-elegant-gray">优雅灰色</option>
+                        <option value="theme-soft-purple">淡雅紫色</option>
+                        <option value="theme-fresh-mint">清新薄荷</option>
+                        <option value="theme-sky-blue">天空蓝</option>
+                        <option value="theme-sunset-orange">日落橙</option>
+                        <option value="theme-dark">深色主题</option>
+                        <option value="theme-minimal">纯色简约</option>
+                        <option value="theme-business-blue">商务蓝</option>
+                        <option value="theme-forest-green">森林绿</option>
+                        <option value="theme-rose-gold">玫瑰金</option>
+                        <option value="theme-ocean-blue">海洋蓝</option>
+                        <option value="theme-warm-yellow">暖阳黄</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 文件选择区域 -->
+            <section class="file-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-alt"></i> 数据源选择</h2>
+                </div>
+                <div class="file-controls">
+                    <div class="file-input-group">
+                        <label for="input-file">数据源文件路径:</label>
+                        <div class="input-with-button">
+                            <input type="text" id="input-file" value="D:\ailun\dianpuxinxi.txt" readonly style="background-color: #f8f9fa; color: #495057;">
+                            <span class="file-status" id="file-status">
+                                <i class="fas fa-info-circle"></i> 固定路径
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="file-input-group">
+                        <label for="output-file">Excel输出文件:</label>
+                        <div class="input-with-button">
+                            <input type="text" id="output-file" placeholder="选择Excel文件保存位置..." readonly>
+                            <button id="select-output-btn" class="btn btn-secondary">
+                                <i class="fas fa-save"></i> 选择保存位置
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 操作控制区域 -->
+            <section class="control-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-cogs"></i> 操作控制</h2>
+                </div>
+                <div class="control-buttons">
+                    <button id="extract-btn" class="btn btn-success" disabled>
+                        <i class="fas fa-play"></i> 开始提取
+                    </button>
+                    <button id="monitor-btn" class="btn btn-info" disabled>
+                        <i class="fas fa-eye"></i> 开启监控
+                    </button>
+                    <button id="stop-monitor-btn" class="btn btn-warning" disabled>
+                        <i class="fas fa-stop"></i> 停止监控
+                    </button>
+                </div>
+                
+                <div class="options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="append-mode">
+                        <span class="checkmark"></span>
+                        追加模式（不覆盖现有数据）
+                    </label>
+                </div>
+            </section>
+
+            <!-- 状态显示区域 -->
+            <section class="status-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-info-circle"></i> 状态信息</h2>
+                </div>
+                <div class="status-content">
+                    <div class="status-item">
+                        <span class="status-label">当前状态:</span>
+                        <span id="current-status" class="status-value">就绪</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">监控状态:</span>
+                        <span id="monitor-status" class="status-value">未启动</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">最后更新:</span>
+                        <span id="last-update" class="status-value">-</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 结果显示区域 -->
+            <section class="results-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-table"></i> 提取结果</h2>
+                    <button id="clear-results-btn" class="btn btn-outline">
+                        <i class="fas fa-trash"></i> 清空
+                    </button>
+                </div>
+                <div class="results-content">
+                    <div id="results-table-container">
+                        <table id="results-table" class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>店铺名称</th>
+                                    <th>联系电话</th>
+                                    <th>店铺地址</th>
+                                    <th>提取时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-tbody">
+                                <!-- 动态生成的结果行 -->
+                            </tbody>
+                        </table>
+                        <div id="no-results" class="no-results">
+                            <i class="fas fa-inbox"></i>
+                            <p>暂无提取结果</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 日志区域 -->
+            <section class="log-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-terminal"></i> 操作日志</h2>
+                    <button id="clear-log-btn" class="btn btn-outline">
+                        <i class="fas fa-eraser"></i> 清空日志
+                    </button>
+                </div>
+                <div class="log-content">
+                    <div id="log-container" class="log-container">
+                        <!-- 动态生成的日志条目 -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 加载指示器 -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>正在处理中...</p>
+        </div>
+    </div>
+
+    <!-- 通知容器 -->
+    <div id="notification-container" class="notification-container">
+        <!-- 动态生成的通知 -->
+    </div>
+
+    <!-- 底部栏 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <span class="app-version">店铺信息提取器 v1.0.0</span>
+            </div>
+            <div class="footer-right">
+                <button id="disclaimer-btn" class="footer-btn" onclick="showDisclaimer()">
+                    <i class="fas fa-info-circle"></i> 软件使用声明
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 软件使用声明弹窗 -->
+    <div id="disclaimer-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> 软件使用声明与免责条款</h3>
+                <button class="modal-close" onclick="closeDisclaimer()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="disclaimer-section">
+                    <h4><i class="fas fa-code-branch"></i> 开源许可与使用范围</h4>
+                    <ul>
+                        <li>本软件完全开源，仅供个人学习、研究和测试使用</li>
+                        <li>严禁用于任何商业用途，包括但不限于销售、租赁、商业服务等</li>
+                        <li>使用者应遵守相关法律法规，尊重数据来源方的权益</li>
+                    </ul>
+                </div>
+
+                <div class="disclaimer-section">
+                    <h4><i class="fas fa-database"></i> 数据采集说明</h4>
+                    <ul>
+                        <li>本软件仅用于采集公开、合法的公共资源</li>
+                        <li>使用者有义务确保采集行为符合目标网站的robots.txt协议和使用条款</li>
+                        <li>请合理控制采集频率，避免对目标服务器造成过大负担</li>
+                    </ul>
+                </div>
+
+                <div class="disclaimer-section">
+                    <h4><i class="fas fa-shield-alt"></i> 免责声明</h4>
+                    <ul>
+                        <li>本软件作者不承担因使用本软件而产生的任何法律责任</li>
+                        <li>使用者应对其使用本软件的行为及后果承担全部责任</li>
+                        <li>如因使用本软件违反相关法律法规，一切后果由使用者自行承担</li>
+                        <li>本软件按"现状"提供，不提供任何形式的保证或承诺</li>
+                    </ul>
+                </div>
+
+                <div class="disclaimer-section">
+                    <h4><i class="fas fa-exclamation-triangle"></i> 风险提示</h4>
+                    <ul>
+                        <li>请在使用前详细了解相关法律法规</li>
+                        <li>建议在合法合规的前提下使用本软件</li>
+                        <li>如有疑问，建议咨询专业法律人士</li>
+                    </ul>
+                </div>
+
+                <div class="disclaimer-section">
+                    <h4><i class="fas fa-file-contract"></i> 其他条款</h4>
+                    <ul>
+                        <li>下载、安装或使用本软件即表示同意本声明的所有条款</li>
+                        <li>作者保留随时修改本声明的权利</li>
+                        <li>如不同意本声明，请立即停止使用并删除本软件</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeDisclaimer()">
+                    <i class="fas fa-check"></i> 我已阅读并同意
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

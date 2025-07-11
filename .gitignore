@@ -1,0 +1,108 @@
+# 店铺信息提取器 - Git忽略文件配置
+
+# Node.js 依赖包
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Python 缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 构建输出文件
+dist/
+.tmp/
+.cache/
+
+# 测试生成的临时文件
+test_*.txt
+test_*.xlsx
+test_*.json
+simple_test.*
+workflow_test.*
+test_export.*
+test_dedup_result.*
+test_duplicate_data.*
+test_additional_data.*
+simple_dedup_test.*
+
+# 用户数据文件
+dianpuxinxi.txt
+*.xlsx
+*.xls
+shop_data.*
+店铺数据.*
+
+# 系统临时文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE 配置文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Windows 系统文件
+*.tmp
+*.temp
+*.log
+
+# 编辑器备份文件
+*.bak
+*.orig
+*.rej
+
+# 压缩文件
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# 运行时文件
+*.pid
+*.seed
+*.pid.lock
+
+# 环境变量文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 其他临时文件
+*.tmp
+*.temp
+*.cache

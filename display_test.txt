@@ -1,0 +1,66 @@
+{
+  "msg": "成功",
+  "code": 0,
+  "data": {
+    "id": -500,
+    "status": 1,
+    "name": "显示测试餐厅(修复验证)",
+    "call_center": "13500135000",
+    "phone_list": [
+      "13500135000"
+    ],
+    "address": "显示测试省显示测试市显示测试区显示测试街道500号",
+    "pic_url": "http://example.com/display_test.jpg",
+    "shipping_time": "09:00-21:00",
+    "shipping_fee": 4.5,
+    "min_price": 25.0,
+    "bulletin": "这是一个用于测试界面显示修复的店铺数据，包含完整的店铺信息字段。",
+    "wm_poi_score": 4.8,
+    "in_time_delivery_percent": 98,
+    "avg_accept_order_time": 3,
+    "avg_delivery_time": 22,
+    "comment_num": 256,
+    "latitude": 39908016,
+    "longitude": 116407128,
+    "distance": "1.8km",
+    "shipping_fee_tip": "配送 ¥4.5",
+    "min_price_tip": "起送 ¥25",
+    "delivery_time_tip": "22分钟",
+    "month_sale_num": 512,
+    "food_score": 4.9,
+    "delivery_score": 4.7,
+    "brand_type": 1,
+    "delivery_type": 1,
+    "poi_sell_status": 1,
+    "support_pay": 1,
+    "invoice_support": 1,
+    "discounts2": [
+      {
+        "info": "首单立减15元"
+      },
+      {
+        "info": "满50减8元"
+      },
+      {
+        "info": "免配送费(满30元)"
+      }
+    ],
+    "show_info": [
+      {
+        "name": "月销量",
+        "value": "512",
+        "unit": "单"
+      },
+      {
+        "name": "好评率",
+        "value": "99",
+        "unit": "%"
+      },
+      {
+        "name": "配送时间",
+        "value": "22",
+        "unit": "分钟"
+      }
+    ]
+  }
+}
