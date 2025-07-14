@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>店铺信息提取器 - 项目主页</title>
+    <!-- DaisyUI + Tailwind CSS (正确的加载顺序) -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script>
+        // Tailwind CSS 配置
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* CSS 重置和基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 动画定义 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 自定义样式 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .feature-icon {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tech-badge {
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* 确保组件正确显示 */
+        .navbar {
+            min-height: 4rem !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .hero {
+            min-height: 100vh !important;
+        }
+
+        .card {
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        /* 加载动画 */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 确保下拉菜单正确显示 */
+        .dropdown-content {
+            background: white !important;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* 按钮样式修复 */
+        .btn {
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar bg-white shadow-lg sticky top-0 z-50 border-b">
+        <div class="navbar-start">
+            <!-- 移动端菜单 -->
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"></path>
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52 border">
+                    <li><a href="#features" class="text-gray-700 hover:text-blue-600">功能特性</a></li>
+                    <li><a href="#architecture" class="text-gray-700 hover:text-blue-600">技术架构</a></li>
+                    <li><a href="#progress" class="text-gray-700 hover:text-blue-600">开发进度</a></li>
+                    <li><a href="#demo" class="text-gray-700 hover:text-blue-600">演示展示</a></li>
+                </ul>
+            </div>
+            <!-- Logo -->
+            <a href="#" class="btn btn-ghost text-xl font-bold text-gray-800">
+                <i class="fas fa-store text-blue-600 mr-2"></i>
+                店铺信息提取器
+            </a>
+        </div>
+
+        <!-- 桌面端菜单 -->
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1 space-x-2">
+                <li><a href="#features" class="text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg px-4 py-2 transition-colors">功能特性</a></li>
+                <li><a href="#architecture" class="text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg px-4 py-2 transition-colors">技术架构</a></li>
+                <li><a href="#progress" class="text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg px-4 py-2 transition-colors">开发进度</a></li>
+                <li><a href="#demo" class="text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg px-4 py-2 transition-colors">演示展示</a></li>
+            </ul>
+        </div>
+
+        <!-- 右侧按钮 -->
+        <div class="navbar-end space-x-2">
+            <!-- 主题切换 -->
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost text-gray-700">
+                    <i class="fas fa-palette mr-1"></i>
+                    主题
+                </label>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-white rounded-box w-52 border mt-2">
+                    <li><a onclick="setTheme('light')" class="text-gray-700 hover:bg-gray-100">🌞 浅色主题</a></li>
+                    <li><a onclick="setTheme('dark')" class="text-gray-700 hover:bg-gray-100">🌙 深色主题</a></li>
+                    <li><a onclick="setTheme('cupcake')" class="text-gray-700 hover:bg-gray-100">🧁 纸杯蛋糕</a></li>
+                    <li><a onclick="setTheme('corporate')" class="text-gray-700 hover:bg-gray-100">💼 商务风格</a></li>
+                    <li><a onclick="setTheme('synthwave')" class="text-gray-700 hover:bg-gray-100">🌈 合成波</a></li>
+                    <li><a onclick="setTheme('cyberpunk')" class="text-gray-700 hover:bg-gray-100">🤖 赛博朋克</a></li>
+                </ul>
+            </div>
+
+            <!-- GitHub 链接 -->
+            <a href="https://github.com/XUXIKAI886/meituandianpuxinxicaiji"
+               class="btn bg-blue-600 hover:bg-blue-700 text-white border-0 btn-sm"
+               target="_blank">
+                <i class="fab fa-github mr-1"></i>
+                GitHub
+            </a>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <div class="hero min-h-screen gradient-bg">
+        <div class="hero-content text-center text-neutral-content">
+            <div class="max-w-4xl">
+                <div class="mb-8">
+                    <div class="avatar">
+                        <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                            <div class="bg-base-100 flex items-center justify-center">
+                                <i class="fas fa-store text-4xl text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="text-6xl font-bold mb-6">店铺信息提取器</h1>
+                <p class="text-xl mb-4 opacity-90">基于 Electron + Python 的智能数据提取工具</p>
+                <p class="text-lg mb-8 opacity-80">专为呈尚策划客服部定制开发，实现美团外卖店铺信息的自动化采集、智能去重和Excel导出</p>
+                
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    <div class="badge badge-lg badge-outline text-white border-white">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        95% 完成度
+                    </div>
+                    <div class="badge badge-lg badge-outline text-white border-white">
+                        <i class="fas fa-star mr-2"></i>
+                        16种主题
+                    </div>
+                    <div class="badge badge-lg badge-outline text-white border-white">
+                        <i class="fas fa-shield-alt mr-2"></i>
+                        智能去重
+                    </div>
+                    <div class="badge badge-lg badge-outline text-white border-white">
+                        <i class="fas fa-robot mr-2"></i>
+                        自动化采集
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#features" class="btn btn-primary btn-lg">
+                        <i class="fas fa-rocket mr-2"></i>
+                        探索功能
+                    </a>
+                    <a href="#demo" class="btn btn-outline btn-lg text-white border-white hover:bg-white hover:text-primary">
+                        <i class="fas fa-play mr-2"></i>
+                        观看演示
+                    </a>
+                    <a href="https://github.com/XUXIKAI886/meituandianpuxinxicaiji" class="btn btn-ghost btn-lg text-white" target="_blank">
+                        <i class="fab fa-github mr-2"></i>
+                        查看源码
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 项目统计 -->
+    <div class="py-16 bg-base-200">
+        <div class="container mx-auto px-4">
+            <div class="stats stats-vertical lg:stats-horizontal shadow-xl w-full">
+                <div class="stat">
+                    <div class="stat-figure text-primary">
+                        <i class="fas fa-code text-3xl"></i>
+                    </div>
+                    <div class="stat-title">代码行数</div>
+                    <div class="stat-value text-primary">2,000+</div>
+                    <div class="stat-desc">高质量代码实现</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-figure text-secondary">
+                        <i class="fas fa-database text-3xl"></i>
+                    </div>
+                    <div class="stat-title">提取字段</div>
+                    <div class="stat-value text-secondary">27个</div>
+                    <div class="stat-desc">核心店铺信息字段</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-figure text-accent">
+                        <i class="fas fa-palette text-3xl"></i>
+                    </div>
+                    <div class="stat-title">主题方案</div>
+                    <div class="stat-value text-accent">16种</div>
+                    <div class="stat-desc">精美背景主题</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-figure text-success">
+                        <i class="fas fa-check-circle text-3xl"></i>
+                    </div>
+                    <div class="stat-title">完成度</div>
+                    <div class="stat-value text-success">95%</div>
+                    <div class="stat-desc">接近完美状态</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 核心功能特性 -->
+    <section id="features" class="py-20 bg-base-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">🌟 核心功能特性</h2>
+                <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
+                    集成现代化技术栈，提供完整的数据采集、处理和导出解决方案
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 智能数据提取 -->
+                <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300">
+                    <div class="card-body">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-brain text-2xl text-primary"></i>
+                            </div>
+                            <h3 class="card-title text-lg">智能数据提取</h3>
+                        </div>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                JSON格式店铺信息解析
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                27个核心字段自动提取
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                批量处理多条数据
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                容错处理和异常恢复
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 智能去重系统 -->
+                <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300">
+                    <div class="card-body">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-filter text-2xl text-secondary"></i>
+                            </div>
+                            <h3 class="card-title text-lg">智能去重系统</h3>
+                        </div>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                双重去重保护机制
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                基于店铺名称+地址去重
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                统计反馈和日志记录
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                支持新建和追加模式
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 实时监控系统 -->
+                <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300">
+                    <div class="card-body">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-eye text-2xl text-accent"></i>
+                            </div>
+                            <h3 class="card-title text-lg">实时监控系统</h3>
+                        </div>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                文件变化实时监控
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                自动增量数据提取
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                后台自动处理
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                状态实时反馈
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Excel导出系统 -->
+                <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300">
+                    <div class="card-body">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-file-excel text-2xl text-success"></i>
+                            </div>
+                            <h3 class="card-title text-lg">Excel导出系统</h3>
+                        </div>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                一键导出到Excel文件
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                支持追加模式
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                自动时间戳生成
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                数据格式化和排版
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Fiddler集成 -->
+                <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300">
+                    <div class="card-body">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-network-wired text-2xl text-warning"></i>
+                            </div>
+                            <h3 class="card-title text-lg">Fiddler集成</h3>
+                        </div>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                完整的抓包脚本代码
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                自动化数据保存
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                目标API精准匹配
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                详细使用指南文档
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 现代化界面 -->
+                <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 border border-base-300">
+                    <div class="card-body">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-info/10 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-desktop text-2xl text-info"></i>
+                            </div>
+                            <h3 class="card-title text-lg">现代化界面</h3>
+                        </div>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                1100x1100固定窗口设计
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                16种主题方案切换
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                响应式卡片布局
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-success mr-2"></i>
+                                实时状态显示和日志
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技术架构 -->
+    <section id="architecture" class="py-20 bg-base-200">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">🏗️ 技术架构</h2>
+                <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
+                    基于现代化技术栈构建的跨平台桌面应用程序
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- 架构图 -->
+                <div class="order-2 lg:order-1">
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h3 class="card-title text-2xl mb-6 text-center">系统架构图</h3>
+                            <div class="space-y-4">
+                                <!-- 前端层 -->
+                                <div class="bg-primary/10 p-4 rounded-lg">
+                                    <h4 class="font-bold text-primary mb-2">前端层 (Electron)</h4>
+                                    <div class="grid grid-cols-2 gap-2 text-sm">
+                                        <span class="badge badge-outline">HTML5</span>
+                                        <span class="badge badge-outline">CSS3</span>
+                                        <span class="badge badge-outline">JavaScript</span>
+                                        <span class="badge badge-outline">Font Awesome</span>
+                                    </div>
+                                </div>
+
+                                <!-- 后端层 -->
+                                <div class="bg-secondary/10 p-4 rounded-lg">
+                                    <h4 class="font-bold text-secondary mb-2">后端层 (Python)</h4>
+                                    <div class="grid grid-cols-2 gap-2 text-sm">
+                                        <span class="badge badge-outline">pandas</span>
+                                        <span class="badge badge-outline">openpyxl</span>
+                                        <span class="badge badge-outline">JSON解析</span>
+                                        <span class="badge badge-outline">数据处理</span>
+                                    </div>
+                                </div>
+
+                                <!-- 数据采集层 -->
+                                <div class="bg-accent/10 p-4 rounded-lg">
+                                    <h4 class="font-bold text-accent mb-2">数据采集层</h4>
+                                    <div class="grid grid-cols-2 gap-2 text-sm">
+                                        <span class="badge badge-outline">Fiddler Classic</span>
+                                        <span class="badge badge-outline">JScript.NET</span>
+                                        <span class="badge badge-outline">美团API</span>
+                                        <span class="badge badge-outline">自动保存</span>
+                                    </div>
+                                </div>
+
+                                <!-- 监控层 -->
+                                <div class="bg-success/10 p-4 rounded-lg">
+                                    <h4 class="font-bold text-success mb-2">文件监控层</h4>
+                                    <div class="grid grid-cols-2 gap-2 text-sm">
+                                        <span class="badge badge-outline">chokidar</span>
+                                        <span class="badge badge-outline">实时检测</span>
+                                        <span class="badge badge-outline">自动处理</span>
+                                        <span class="badge badge-outline">增量更新</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 技术栈详情 -->
+                <div class="order-1 lg:order-2">
+                    <div class="space-y-6">
+                        <div class="card bg-base-100 shadow-lg">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    <i class="fas fa-desktop text-primary"></i>
+                                    前端技术栈
+                                </h3>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span>Electron 28.0.0</span>
+                                        <div class="badge badge-primary">跨平台框架</div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>HTML5 + CSS3</span>
+                                        <div class="badge badge-secondary">现代化界面</div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>JavaScript ES6+</span>
+                                        <div class="badge badge-accent">交互逻辑</div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Font Awesome 6.0</span>
+                                        <div class="badge badge-info">图标库</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card bg-base-100 shadow-lg">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    <i class="fas fa-server text-secondary"></i>
+                                    后端技术栈
+                                </h3>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span>Python 3.7+</span>
+                                        <div class="badge badge-primary">数据处理引擎</div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>pandas</span>
+                                        <div class="badge badge-secondary">数据分析</div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>openpyxl</span>
+                                        <div class="badge badge-accent">Excel操作</div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Node.js 16+</span>
+                                        <div class="badge badge-info">运行时环境</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card bg-base-100 shadow-lg">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    <i class="fas fa-network-wired text-accent"></i>
+                                    数据采集工具
+                                </h3>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span>Fiddler Classic</span>
+                                        <div class="badge badge-primary">抓包工具</div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>JScript.NET</span>
+                                        <div class="badge badge-secondary">自动化脚本</div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>美团外卖API</span>
+                                        <div class="badge badge-accent">目标接口</div>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>JSON格式</span>
+                                        <div class="badge badge-info">数据格式</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 开发进度 -->
+    <section id="progress" class="py-20 bg-base-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">📈 开发进度</h2>
+                <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
+                    项目已达到95%的完成度，所有核心功能均已实现并经过测试验证
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- 进度概览 -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-2xl mb-6">
+                            <i class="fas fa-chart-line text-primary"></i>
+                            完成度统计
+                        </h3>
+
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">数据提取引擎</span>
+                                    <span class="text-success font-bold">100%</span>
+                                </div>
+                                <progress class="progress progress-success w-full" value="100" max="100"></progress>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">Excel导出功能</span>
+                                    <span class="text-success font-bold">100%</span>
+                                </div>
+                                <progress class="progress progress-success w-full" value="100" max="100"></progress>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">去重系统</span>
+                                    <span class="text-success font-bold">100%</span>
+                                </div>
+                                <progress class="progress progress-success w-full" value="100" max="100"></progress>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">文件监控</span>
+                                    <span class="text-success font-bold">100%</span>
+                                </div>
+                                <progress class="progress progress-success w-full" value="100" max="100"></progress>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">界面设计</span>
+                                    <span class="text-success font-bold">100%</span>
+                                </div>
+                                <progress class="progress progress-success w-full" value="100" max="100"></progress>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">Fiddler集成</span>
+                                    <span class="text-success font-bold">100%</span>
+                                </div>
+                                <progress class="progress progress-success w-full" value="100" max="100"></progress>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">打包分发</span>
+                                    <span class="text-success font-bold">100%</span>
+                                </div>
+                                <progress class="progress progress-success w-full" value="100" max="100"></progress>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-semibold">测试验证</span>
+                                    <span class="text-warning font-bold">90%</span>
+                                </div>
+                                <progress class="progress progress-warning w-full" value="90" max="100"></progress>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="text-center">
+                            <div class="radial-progress text-primary text-2xl font-bold" style="--value:95;" role="progressbar">95%</div>
+                            <p class="mt-2 text-lg font-semibold">总体完成度</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 功能模块状态 -->
+                <div class="space-y-6">
+                    <div class="card bg-base-100 shadow-lg">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <i class="fas fa-check-circle text-success"></i>
+                                已完成功能
+                            </h3>
+                            <div class="grid grid-cols-1 gap-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-check text-success mr-2"></i>
+                                    <span>智能数据提取系统</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check text-success mr-2"></i>
+                                    <span>Excel导出功能</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check text-success mr-2"></i>
+                                    <span>智能去重系统</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check text-success mr-2"></i>
+                                    <span>实时监控系统</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check text-success mr-2"></i>
+                                    <span>固定路径系统</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check text-success mr-2"></i>
+                                    <span>现代化界面系统</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check text-success mr-2"></i>
+                                    <span>主题系统</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check text-success mr-2"></i>
+                                    <span>Fiddler集成系统</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check text-success mr-2"></i>
+                                    <span>打包分发系统</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card bg-base-100 shadow-lg">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <i class="fas fa-clock text-warning"></i>
+                                待优化项目 (5%)
+                            </h3>
+                            <div class="grid grid-cols-1 gap-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-circle text-warning mr-2 text-xs"></i>
+                                    <span>内置Fiddler配置向导</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-circle text-warning mr-2 text-xs"></i>
+                                    <span>数据统计和可视化面板</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-circle text-warning mr-2 text-xs"></i>
+                                    <span>多格式导出支持</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-circle text-warning mr-2 text-xs"></i>
+                                    <span>批量文件处理功能</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card bg-base-100 shadow-lg">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <i class="fas fa-trophy text-primary"></i>
+                                项目亮点
+                            </h3>
+                            <div class="grid grid-cols-1 gap-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-primary mr-2"></i>
+                                    <span>双重去重保护机制</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-primary mr-2"></i>
+                                    <span>固定路径优化设计</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-primary mr-2"></i>
+                                    <span>Fiddler自动化集成</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-primary mr-2"></i>
+                                    <span>16种主题方案</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-primary mr-2"></i>
+                                    <span>专业定制化界面</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 演示视频和截图 -->
+    <section id="demo" class="py-20 bg-base-200">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">🎬 演示展示</h2>
+                <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
+                    通过界面截图和功能演示，直观了解项目的实际效果
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- 主界面展示 -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl mb-4">
+                            <i class="fas fa-desktop text-primary"></i>
+                            主界面展示
+                        </h3>
+                        <div class="mockup-window border bg-base-300">
+                            <div class="flex justify-center px-4 py-16 bg-base-200">
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-store text-2xl text-white"></i>
+                                    </div>
+                                    <h4 class="text-lg font-bold mb-2">店铺信息提取器</h4>
+                                    <p class="text-sm text-base-content/70">1100x1100 固定窗口设计</p>
+                                    <div class="mt-4 space-y-2">
+                                        <div class="bg-base-100 p-2 rounded text-xs">数据源选择</div>
+                                        <div class="bg-base-100 p-2 rounded text-xs">操作控制</div>
+                                        <div class="bg-base-100 p-2 rounded text-xs">状态信息</div>
+                                        <div class="bg-base-100 p-2 rounded text-xs">提取结果</div>
+                                        <div class="bg-base-100 p-2 rounded text-xs">操作日志</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-base-content/70 mt-4">
+                            专为呈尚策划客服部定制的1100x1100固定窗口界面，包含完整的功能模块和实时状态反馈。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 主题展示 -->
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl mb-4">
+                            <i class="fas fa-palette text-secondary"></i>
+                            16种主题方案
+                        </h3>
+                        <div class="grid grid-cols-4 gap-3">
+                            <div class="aspect-square bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">清新蓝灰</span>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-orange-400 to-red-500 rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">温暖米色</span>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-green-400 to-teal-500 rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">清淡绿色</span>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-gray-400 to-gray-600 rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">优雅灰色</span>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">淡雅紫色</span>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-green-300 to-yellow-400 rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">清新薄荷</span>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-sky-400 to-blue-500 rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">天空蓝</span>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">日落橙</span>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-gray-800 to-black rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">深色主题</span>
+                            </div>
+                            <div class="aspect-square bg-gray-100 border-2 border-gray-300 rounded-lg flex items-center justify-center">
+                                <span class="text-gray-800 text-xs font-bold">纯色简约</span>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">商务蓝</span>
+                            </div>
+                            <div class="aspect-square bg-gradient-to-br from-green-600 to-green-800 rounded-lg flex items-center justify-center">
+                                <span class="text-white text-xs font-bold">森林绿</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-base-content/70 mt-4">
+                            提供16种精美的背景主题方案，满足不同用户的视觉偏好和工作环境需求。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 功能演示 -->
+            <div class="mt-12">
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-2xl mb-6 text-center">
+                            <i class="fas fa-cogs text-accent"></i>
+                            核心功能演示
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- 数据提取演示 -->
+                            <div class="text-center">
+                                <div class="mockup-code bg-base-300 text-left">
+                                    <pre data-prefix="1"><code>正在处理文件: dianpuxinxi.txt</code></pre>
+                                    <pre data-prefix="2"><code>成功提取 5 条店铺信息</code></pre>
+                                    <pre data-prefix="3"><code>检测到 2 条重复数据，已自动去除</code></pre>
+                                    <pre data-prefix="4"><code>去重前: 5 条，去重后: 3 条</code></pre>
+                                    <pre data-prefix="5"><code>数据已保存到: shops.xlsx</code></pre>
+                                </div>
+                                <h4 class="font-bold mt-4">智能数据提取</h4>
+                                <p class="text-sm text-base-content/70">自动解析JSON格式数据并智能去重</p>
+                            </div>
+
+                            <!-- 实时监控演示 -->
+                            <div class="text-center">
+                                <div class="mockup-code bg-base-300 text-left">
+                                    <pre data-prefix="$"><code>开始监控文件: D:\ailun\dianpuxinxi.txt</code></pre>
+                                    <pre data-prefix=">" class="text-warning"><code>文件已更新，自动提取中...</code></pre>
+                                    <pre data-prefix=">" class="text-success"><code>新增 2 条店铺信息</code></pre>
+                                    <pre data-prefix=">" class="text-info"><code>已自动保存到Excel文件</code></pre>
+                                </div>
+                                <h4 class="font-bold mt-4">实时监控</h4>
+                                <p class="text-sm text-base-content/70">文件变化时自动提取和保存数据</p>
+                            </div>
+
+                            <!-- Fiddler集成演示 -->
+                            <div class="text-center">
+                                <div class="mockup-code bg-base-300 text-left">
+                                    <pre data-prefix="F"><code>Fiddler: 捕获到店铺信息请求</code></pre>
+                                    <pre data-prefix="F"><code>URL: wx.waimai.meituan.com/weapp/v1/poi/info</code></pre>
+                                    <pre data-prefix="F" class="text-success"><code>店铺信息已保存到: dianpuxinxi.txt</code></pre>
+                                    <pre data-prefix="A" class="text-info"><code>应用检测到文件变化，开始处理...</code></pre>
+                                </div>
+                                <h4 class="font-bold mt-4">Fiddler集成</h4>
+                                <p class="text-sm text-base-content/70">自动抓包保存，实现全流程自动化</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目特色和价值 -->
+    <section class="py-20 bg-base-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">🌟 项目特色与价值</h2>
+                <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
+                    展示现代桌面应用开发的最佳实践，为类似数据处理需求提供完整解决方案
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- 专业定制化 -->
+                <div class="card bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 hover:shadow-xl transition-all duration-300">
+                    <div class="card-body text-center">
+                        <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-cog text-2xl text-primary"></i>
+                        </div>
+                        <h3 class="card-title justify-center text-lg mb-3">专业定制化</h3>
+                        <ul class="text-sm space-y-1 text-left">
+                            <li>• 为呈尚策划客服部量身定制</li>
+                            <li>• 1100x1100固定窗口适配</li>
+                            <li>• 简化操作流程提升效率</li>
+                            <li>• 标准化数据管理</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 技术先进性 -->
+                <div class="card bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20 hover:shadow-xl transition-all duration-300">
+                    <div class="card-body text-center">
+                        <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-rocket text-2xl text-secondary"></i>
+                        </div>
+                        <h3 class="card-title justify-center text-lg mb-3">技术先进性</h3>
+                        <ul class="text-sm space-y-1 text-left">
+                            <li>• 现代化Electron架构</li>
+                            <li>• 智能去重算法</li>
+                            <li>• 实时监控技术</li>
+                            <li>• 自动化数据采集</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 用户体验优秀 -->
+                <div class="card bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 hover:shadow-xl transition-all duration-300">
+                    <div class="card-body text-center">
+                        <div class="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-heart text-2xl text-accent"></i>
+                        </div>
+                        <h3 class="card-title justify-center text-lg mb-3">用户体验优秀</h3>
+                        <ul class="text-sm space-y-1 text-left">
+                            <li>• 16种主题方案</li>
+                            <li>• 直观的状态反馈</li>
+                            <li>• 详细的操作日志</li>
+                            <li>• 友好的错误处理</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 完整生态系统 -->
+                <div class="card bg-gradient-to-br from-success/10 to-success/5 border border-success/20 hover:shadow-xl transition-all duration-300">
+                    <div class="card-body text-center">
+                        <div class="w-16 h-16 bg-success/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-network-wired text-2xl text-success"></i>
+                        </div>
+                        <h3 class="card-title justify-center text-lg mb-3">完整生态系统</h3>
+                        <ul class="text-sm space-y-1 text-left">
+                            <li>• Fiddler抓包集成</li>
+                            <li>• 自动化脚本支持</li>
+                            <li>• 完善的文档体系</li>
+                            <li>• 全面的测试验证</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 工作流程图 -->
+            <div class="mt-16">
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-2xl mb-8 text-center">
+                            <i class="fas fa-sitemap text-primary"></i>
+                            完整工作流程
+                        </h3>
+
+                        <div class="flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0 lg:space-x-4">
+                            <!-- 步骤1 -->
+                            <div class="flex flex-col items-center text-center">
+                                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-3">
+                                    <i class="fas fa-network-wired text-white text-xl"></i>
+                                </div>
+                                <h4 class="font-bold mb-2">Fiddler抓包</h4>
+                                <p class="text-sm text-base-content/70">自动捕获美团外卖店铺信息</p>
+                            </div>
+
+                            <div class="hidden lg:block">
+                                <i class="fas fa-arrow-right text-2xl text-base-content/30"></i>
+                            </div>
+                            <div class="lg:hidden">
+                                <i class="fas fa-arrow-down text-2xl text-base-content/30"></i>
+                            </div>
+
+                            <!-- 步骤2 -->
+                            <div class="flex flex-col items-center text-center">
+                                <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mb-3">
+                                    <i class="fas fa-save text-white text-xl"></i>
+                                </div>
+                                <h4 class="font-bold mb-2">自动保存</h4>
+                                <p class="text-sm text-base-content/70">数据保存到固定路径文件</p>
+                            </div>
+
+                            <div class="hidden lg:block">
+                                <i class="fas fa-arrow-right text-2xl text-base-content/30"></i>
+                            </div>
+                            <div class="lg:hidden">
+                                <i class="fas fa-arrow-down text-2xl text-base-content/30"></i>
+                            </div>
+
+                            <!-- 步骤3 -->
+                            <div class="flex flex-col items-center text-center">
+                                <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mb-3">
+                                    <i class="fas fa-eye text-white text-xl"></i>
+                                </div>
+                                <h4 class="font-bold mb-2">实时监控</h4>
+                                <p class="text-sm text-base-content/70">检测文件变化并自动处理</p>
+                            </div>
+
+                            <div class="hidden lg:block">
+                                <i class="fas fa-arrow-right text-2xl text-base-content/30"></i>
+                            </div>
+                            <div class="lg:hidden">
+                                <i class="fas fa-arrow-down text-2xl text-base-content/30"></i>
+                            </div>
+
+                            <!-- 步骤4 -->
+                            <div class="flex flex-col items-center text-center">
+                                <div class="w-16 h-16 bg-success rounded-full flex items-center justify-center mb-3">
+                                    <i class="fas fa-filter text-white text-xl"></i>
+                                </div>
+                                <h4 class="font-bold mb-2">智能去重</h4>
+                                <p class="text-sm text-base-content/70">自动过滤重复店铺信息</p>
+                            </div>
+
+                            <div class="hidden lg:block">
+                                <i class="fas fa-arrow-right text-2xl text-base-content/30"></i>
+                            </div>
+                            <div class="lg:hidden">
+                                <i class="fas fa-arrow-down text-2xl text-base-content/30"></i>
+                            </div>
+
+                            <!-- 步骤5 -->
+                            <div class="flex flex-col items-center text-center">
+                                <div class="w-16 h-16 bg-warning rounded-full flex items-center justify-center mb-3">
+                                    <i class="fas fa-file-excel text-white text-xl"></i>
+                                </div>
+                                <h4 class="font-bold mb-2">Excel导出</h4>
+                                <p class="text-sm text-base-content/70">生成格式化的Excel报表</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content">
+        <aside>
+            <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4">
+                <i class="fas fa-store text-2xl text-white"></i>
+            </div>
+            <p class="font-bold text-lg">店铺信息提取器</p>
+            <p class="text-base-content/70">基于 Electron + Python 的智能数据提取工具</p>
+            <p class="text-sm text-base-content/50">专为呈尚策划客服部定制开发</p>
+        </aside>
+        <nav>
+            <div class="grid grid-flow-col gap-4">
+                <a href="https://github.com/XUXIKAI886/meituandianpuxinxicaiji" class="btn btn-ghost btn-circle" target="_blank">
+                    <i class="fab fa-github text-xl"></i>
+                </a>
+                <a href="#" class="btn btn-ghost btn-circle">
+                    <i class="fas fa-envelope text-xl"></i>
+                </a>
+                <a href="#" class="btn btn-ghost btn-circle">
+                    <i class="fas fa-phone text-xl"></i>
+                </a>
+            </div>
+        </nav>
+        <aside>
+            <p class="text-sm text-base-content/50">© 2025 店铺信息提取器项目. 保留所有权利.</p>
+        </aside>
+    </footer>
+
+    <script>
+        // 主题切换功能
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        // 页面加载时恢复主题
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 添加滚动动画效果
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // 为卡片添加动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
